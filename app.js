@@ -26,9 +26,13 @@ const messagesWithPrompt = [
 
 app.message("", async ({ message, say }) => {
   if (message.channel === "C06RWQWMMUN") {
+    const user = await app.client.users.info({
+      user: message.user,
+    });
+    const formattedMessage = `${user.user.profile.display_name_normalized} says: ${message.text}`;
     messagesWithPrompt.push({
       role: "user",
-      content: message.text,
+      content: formattedMessage,
     });
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
