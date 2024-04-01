@@ -19,24 +19,53 @@ const prompt =
 /* Add functionality here */
 
 // Respond if someone @s the bot
-app.message("<@U06SG3LLS65>", async ({ message, say }) => {
-  // say() sends a message to the channel where the event was triggered
-  const messagesWithPrompt = [
-    {
-      role: "system",
-      content: prompt,
-    },
-    {
-      role: "user",
-      content: message.text,
-    },
-  ];
-  const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
-    messages: messagesWithPrompt,
-    stream: false,
-  });
-  await say(response.choices[0].message.content);
+// app.message("<@U06SG3LLS65>", async ({ message, say }) => {
+//   // say() sends a message to the channel where the event was triggered
+//   const messagesWithPrompt = [
+//     {
+//       role: "system",
+//       content: prompt,
+//     },
+//     {
+//       role: "user",
+//       content: message.text,
+//     },
+//   ];
+//   const response = await openai.chat.completions.create({
+//     model: "gpt-3.5-turbo",
+//     messages: messagesWithPrompt,
+//     stream: false,
+//   });
+//   await say(response.choices[0].message.content);
+// });
+
+app.message("", async ({ message, say }) => {
+  if (message.channel === "C06RWQWMMUN") {
+    const messagesWithPrompt = [
+      {
+        role: "system",
+        content: prompt,
+      },
+      {
+        role: "user",
+        content: message.text,
+      },
+    ];
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: messagesWithPrompt,
+      stream: false,
+    });
+    try {
+      await say({
+        text: response.choices[0].message.content,
+        thread_ts: message.thread_ts || message.ts,
+      });
+    } catch (error) {
+      console.log("err");
+      console.error(error);
+    }
+  }
 });
 
 (async () => {
